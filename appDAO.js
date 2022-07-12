@@ -217,7 +217,7 @@ let addToAccess = (userId, fridgeId, isOwner) => {
 
     );
 }
-
+    
 /* 
 * Deletes ALL fridges and access of every user
 * Only to be used for a complete database cleanup, preferrebly not by itself
