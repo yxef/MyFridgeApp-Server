@@ -177,7 +177,6 @@ let deleteFridges = () => {
 openDatabase();
 
 //createNewFridge(22, "aaaaaaa", false);
-
 //deleteFridges();
 getAllTables();
 closeDatabase();
