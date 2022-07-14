@@ -305,7 +305,6 @@ let addFood = (fridgeId, foodName, expirationDate, iconId) => {
          VALUES(?, ?, ?, ?)`,
         [fridgeId, foodName, expirationDate, iconId],
         (err) => {
-
             if (err) return console.log(err.message);
         }
     )
