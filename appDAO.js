@@ -1,3 +1,6 @@
+const { rejects } = require('assert');
+const { randomInt } = require('crypto');
+const { json } = require('express');
 const { resolve } = require('path');
 
 const sqlite3 = require('sqlite3').verbose();
@@ -85,7 +88,8 @@ let createTableFoods = () => {
 
 
 /**
- * it takes a SELECT SQL query and it prints each row returned
+ * Debug Method
+ * Takes a SELECT SQL query and it prints each row returned to console
  */
 let performAllQuery = (sql) => {
     db.all(sql, [], (err, rows) => {
@@ -99,7 +103,8 @@ let performAllQuery = (sql) => {
 }
 
 /**
- * Debug method, prints all the tables
+ * Debug method
+ * Prints all the tables to the console
  */
 let getAllTables = () => {
     let sqlUsers = `SELECT * FROM users`;
@@ -168,14 +173,12 @@ let getAllFridges = () => {
  * Creates a new User with specific Id
  * We have to pass the Id since its meant to be the App install Id
  */
-let createNewUser = (id) => {
+let addNewUser = (id) => {
     db.run(
         `INSERT INTO users (id) VALUES(?)`,
         [id],
         (err) => {
             if (err) return console.log(err.message);
-
-            console.log("new row has been created");
         }
     )
 }
@@ -188,14 +191,14 @@ let createNewUser = (id) => {
  * this function, the fridgeId of the row we just inserted and the isOwner flag
  * which is always True given that the user created the Fridge
  */
-let createNewFridge = (userId, fridgeName) => {
+let addNewFridge = (userId, fridgeName) => {
     db.run(
         `INSERT INTO fridges (name) VALUES(?)`,
         [fridgeName],
         function (err) {
             if (err) return console.log(err.message);
 
-            addToAccess(userId, this.lastID, True);
+            addToAccess(userId, this.lastID, true);
         }
     )
 }
@@ -217,17 +220,24 @@ let addToAccess = (userId, fridgeId, isOwner) => {
 
     );
 }
-    
+
 /* 
-* Deletes ALL fridges and access of every user
+* Debug Method
+* Deletes ALL contents of tables
 * Only to be used for a complete database cleanup, preferrebly not by itself
 * For design testing purposes only
 */
-let deleteAllFridges = () => {
+let deleteAll = () => {
     db.run(`DELETE FROM fridges`, [], (err) => {
         if (err) return console.log(err.message);
     })
     db.run(`DELETE FROM access`, [], (err) => {
+        if (err) return console.log(err.message);
+    })
+    db.run(`DELETE FROM foods`, [], (err) => {
+        if (err) return console.log(err.message);
+    })
+    db.run(`DELETE FROM users`, [], (err) => {
         if (err) return console.log(err.message);
     })
 }
@@ -235,7 +245,7 @@ let deleteAllFridges = () => {
 /*
 * Deletes a row of the fridge table with specific fridgeId
 * and all of its appereances on the access table
-*/ 
+*/
 let deleteFridgeOfUser = (userId, fridgeId) => {
     db.run(
         `DELETE FROM fridges WHERE id = ?`,
@@ -254,11 +264,9 @@ let deleteFridgeOfUser = (userId, fridgeId) => {
 * Unless its the owner of the fridge
 */
 let deleteAccessOfUserToFridge = (userId, fridgeId, isOwner) => {
-    if(isOwner == true)
-        return;
-    
+
     db.run(
-        `DELETE FROM access WHERE userId = ? AND fridgeId = ? and isOwner = ?`,
+        `DELETE FROM access WHERE userId = ? AND fridgeId = ? AND isOwner = ?`,
         [userId, fridgeId, isOwner],
         (err) => {
             if (err) return console.log(err.message);
@@ -281,7 +289,8 @@ let deleteAccessOfUserToAllFridges = (userId) => {
 }
 
 /**
- * DB setup, FOR TESTING PURPOSES ONLY
+ * Debug Function
+ * Creates Tables needed for the DB
  */
 let initializeDatabase = () => {
     createTableUser();
@@ -290,23 +299,103 @@ let initializeDatabase = () => {
     createTableAccess();
 }
 
+let addFood = (fridgeId, foodName, expirationDate, iconId) => {
+    db.run(
+        `INSERT INTO foods(fridgeId, foodName, expiration_date, iconId)
+         VALUES(?, ?, ?, ?)`,
+        [fridgeId, foodName, expirationDate, iconId],
+        (err) => {
+
+            if (err) return console.log(err.message);
+        }
+    )
+}
+
+/**
+ * 
+ * @param {*} fridgeId 
+ * @returns resolve = oromise JSON object. reject = error message  
+ * is handled by getFoodResultAsync(fridgeId)
+ * Selects all food of a single fridge
+ * is asyncronous
+ */
+let getFoodInFridge = (fridgeId) => {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(
+                `SELECT * FROM foods WHERE fridgeId = ?`,
+                [fridgeId],
+                (err, rows) => {
+                    if (err) return reject(err.message);
+
+                    resolve(rows);
+                }
+            );
+        });
+    });
+}
+
+const getFoodResultAsync = async (fridgeId) => {
+    const result = await getFoodInFridge(fridgeId);
+    //console.log(result);
+    return result;
+}
+
+// let getFoodResultPromise = (fridgeId) => {
+//     getFoodInFridge(fridgeId).then((results) => {
+//         return results;
+//     });
+// }
+
+/**
+ * Debug Function
+ * returns a random name from list name
+ * used to populate food table organically
+ */
+let randomFoodName = () => {
+    let nameList = [
+        `apple`,
+        `mayo`,
+        `pasta`,
+        `banana`,
+        `tomato`,
+        `pingas`,
+        `pistacchio`,
+        `meow`,
+        `mozzarella`,
+        `cheese`,
+        `lettuce`
+    ];
+
+    return nameList[randomInt(0, nameList.length - 1)];
+}
+
 /**
  * TO REPOPULATE DB
  * FOR TESTING ONLY
  * TODO("ADD FOODS QUERIES")
  */
-let populateDatavase = () => {
-    for(let i = 0; i < 10; i++){createNewUser(i);}
-    for(let i = 0; i < 10; i++){createNewFridge(i, `${i} fridge`);}
+let populateDatabase = () => {
+    for (let i = 0; i < 10; i++) { addNewUser(i); }
+    for (let i = 0; i < 10; i++) { addNewFridge(i, `${i} fridge`); }
+    for (let i = 0; i < 20; i++) { addFood(randomInt(1, 20), randomFoodName(), `2000-10-5`, randomInt(0, 5)) }
 }
 
 
 
-openDatabase();
+// openDatabase();
 
-// START MANUAL FUCTION CALLS HERE
+// // START MANUAL FUCTION CALLS HERE
 
-getAllTables();
+// //getAllTables();
+// //populateDatabase();
+// //deleteAll();
+// const foodResult = getFoodResultAsync(10);
+// foodResult.then(result => console.log(result));
 
+// closeDatabase();
 
-closeDatabase();
+module.exports.openDatabase = openDatabase;
+module.exports.closeDatabase = closeDatabase;
+module.exports.getAllTables = getAllTables;
+module.exports.getFoodResultAsync = getFoodResultAsync;
