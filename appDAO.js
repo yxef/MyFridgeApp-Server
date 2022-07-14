@@ -337,7 +337,6 @@ let getFoodInFridge = (fridgeId) => {
 
 const getFoodResultAsync = async (fridgeId) => {
     const result = await getFoodInFridge(fridgeId);
-    //console.log(result);
     return result;
 }
 
