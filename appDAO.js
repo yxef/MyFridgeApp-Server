@@ -118,21 +118,7 @@ let getAllTables = () => {
     performAllQuery(sqlFoods);
 }
 
-/**
- * Prints to console a single User with matching Id
- */
-let getUser = (id) => {
-    db.all(
-        `SELECT * FROM users WHERE id = ?`,
-        [id],
-        (err, rows) => {
-            if (err) return console.log(err.message);
 
-            rows.forEach((row) => {
-                console.log(row);
-            });
-        });
-}
 
 /**
  * Debug method
@@ -169,18 +155,37 @@ let getAllFridges = () => {
 
 }
 
+
+/**
+ * Prints to console a single User with matching Id
+ */
+let getUser = (id) => {
+    db.all(
+        `SELECT * FROM users WHERE id = ?`,
+        [id],
+        (err, rows) => {
+            if (err) return console.log(err.message);
+
+            rows.forEach((row) => {
+                console.log(row);
+            });
+        });
+}
+
 /**
  * Creates a new User with specific Id
  * We have to pass the Id since its meant to be the App install Id
  */
 let addNewUser = (id) => {
-    db.run(
-        `INSERT INTO users (id) VALUES(?)`,
-        [id],
-        (err) => {
-            if (err) return console.log(err.message);
-        }
-    )
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO users (id) VALUES(?)`,
+            [id],
+            (err) => {
+                if (err) return console.log(err.message);
+            }
+        );
+    });
 }
 
 /**
@@ -245,23 +250,24 @@ let deleteAll = () => {
 /*
 * Deletes a row of the fridge table with specific fridgeId
 * and all of its appereances on the access table
+* TODO("ALSO DELETE FOOD CONTENT ASSOCIATED WITH IT")
 */
 let deleteFridgeOfUser = (userId, fridgeId) => {
     db.run(
-        `DELETE FROM fridges WHERE id = ?`,
+        `DELETE FROM fridges WHERE id = ?`,     // TODO fai un join per controllare l'access e se è il proprietario
         [fridgeId],
         (err) => {
             if (err) return console.log(err.message);
 
             deleteAccessOfUserToFridge(userId, fridgeId);
+            //TODO("deleteAllFoodOfFridge");
         }
     );
 }
 
 /* 
 * Deletes all records from access where userId and fridgeId match
-* To be used to delete a single specific access combination
-* Unless its the owner of the fridge
+* Not to be used if the user is the Owner of the fridge, just be careful :)
 */
 let deleteAccessOfUserToFridge = (userId, fridgeId, isOwner) => {
 
@@ -310,6 +316,26 @@ let addFood = (fridgeId, foodName, expirationDate, iconId) => {
     )
 }
 
+let getAllFridgesOfUser = (userId) => {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(
+                `SELECT * FROM access WHERE userId = ?`,
+                [userId],
+                (err, rows) => {
+                    if (err) return reject(err.message);
+
+                    resolve(rows);
+                }
+            );
+        });
+    });
+}
+
+const getAllFridgesOfUserAsync = async (userId) => {
+    return await getAllFridgesOfUser(userId);
+}
+
 /**
  * 
  * @param {*} fridgeId 
@@ -333,10 +359,8 @@ let getFoodInFridge = (fridgeId) => {
         });
     });
 }
-
 const getFoodResultAsync = async (fridgeId) => {
-    const result = await getFoodInFridge(fridgeId);
-    return result;
+    return await getFoodInFridge(fridgeId);
 }
 
 // let getFoodResultPromise = (fridgeId) => {
@@ -393,7 +417,21 @@ let populateDatabase = () => {
 
 // closeDatabase();
 
+// ---- BASIC FUNCTIONALITY
 module.exports.openDatabase = openDatabase;
 module.exports.closeDatabase = closeDatabase;
+
+// ---- GETTERS ----
+module.exports.getFoodResult = getFoodResultAsync;
+module.exports.getAllFridgesOfUser = getAllFridgesOfUserAsync;
+
+// ---- SETTERS ----
+module.exports.addNewUser = addNewUser;
+module.exports.addToAccess = addToAccess;
+module.exports.addFood = addFood;
+module.exports.addNewFridge = addNewFridge;
+
+// ---- UPDATERS ----
+
+// ---- DEBUG METHODS ----
 module.exports.getAllTables = getAllTables;
-module.exports.getFoodResultAsync = getFoodResultAsync;
