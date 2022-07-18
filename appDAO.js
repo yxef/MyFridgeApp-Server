@@ -278,8 +278,8 @@ let deleteAllFoodOfFridge = (fridgeId) => {
 
 let deleteSingleFoodOfFridge = (fridgeId, foodId) => {
     db.run(
-        `DELETE FROM foods WHERE fridgeId = ?`,
-        [fridgeId],
+        `DELETE FROM foods WHERE fridgeId = ? AND foodId = ?`,
+        [fridgeId, foodId],
         (err) => {
             if (err) return console.log(err.message);
         }
