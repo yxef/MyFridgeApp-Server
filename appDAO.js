@@ -418,10 +418,10 @@ let randomFoodName = () => {
  * FOR TESTING ONLY
  * TODO("ADD FOODS QUERIES")
  */
-let populateDatabase = () => {
+let populateMockDatabase = () => {
     for (let i = 0; i < 10; i++) { addNewUser(i); }
     for (let i = 0; i < 10; i++) { addNewFridge(i, `${i} fridge`); }
-    for (let i = 0; i < 20; i++) { addFood(randomInt(1, 20), randomFoodName(), `2000-10-5`, randomInt(0, 5)) }
+    for (let i = 0; i < 20; i++) { addFood(randomInt(1, 20).toString(), randomFoodName(), `2000-10-5`, randomInt(0, 5)) }
 }
 
 

@@ -113,7 +113,7 @@ app.post(`/user/create/fridge`, (req, res) => {
 });
 
 /**
- * Gives permission to a user to access a refrigerator
+ * Gives Access of a fridge to a User
  * User id has to be passed on a body JSON
  */
 app.post(`/fridge/access/give/:fridgeId`, (req, res) =>{
@@ -150,8 +150,13 @@ app.post(`/fridge/add/food/`, (req, res) => {
 
 // -------------- UPDATERS ----------------
 
+
+
 // -------------- DELETERS ----------------
 
+/**
+ * Deletes the Fridge of a User
+ */
 app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
     const {userId} = req.params;
     const {fridgeId} = req.params;
@@ -164,6 +169,9 @@ app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
 
 })
 
+/**
+ * Deletes from a fridge a single Food item
+ */
 app.delete(`/fridge/:fridgeId/delete/food/:foodId`, (req, res) => {
     const {fridgeId} = req.params;
     const {foodId} = req.params;
@@ -175,7 +183,11 @@ app.delete(`/fridge/:fridgeId/delete/food/:foodId`, (req, res) => {
     res.status(200).send(`Deletato ${foodId} da ${fridgeId}`);
 })
 
-app.delete(`/user/:userId/access/delete/:fridgeId`, (req,res) =>{
+
+/**
+ * Deletes a users access to a fridge
+ */
+app.delete(`/fridge/:fridgeId/access/delete/:userId`, (req,res) =>{
     const {userId} = req.params;
     const {fridgeId} = req.params;
 
