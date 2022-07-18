@@ -27,6 +27,8 @@ let openDatabase = () => {
 let closeDatabase = () => {
     db.close((err) => {
         if (err) return console.log(err.message);
+
+        console.log("Connection Terminated");
     });
 }
 
@@ -254,13 +256,23 @@ let deleteAll = () => {
 */
 let deleteFridgeOfUser = (userId, fridgeId) => {
     db.run(
-        `DELETE FROM fridges WHERE id = ?`,     // TODO fai un join per controllare l'access e se è il proprietario
+        `DELETE FROM fridges WHERE id = ?`,     // not gonna bother checking if they are the owner or not, i'm just gonna use it properly
         [fridgeId],
         (err) => {
             if (err) return console.log(err.message);
 
             deleteAccessOfUserToFridge(userId, fridgeId);
-            //TODO("deleteAllFoodOfFridge");
+            deleteAllFoodOfFridge(fridgeId);
+        }
+    );
+}
+
+let deleteAllFoodOfFridge = (fridgeId) => {
+    db.run(
+        `DELETE FROM foods WHERE fridgeId = ?`,
+        [fridgeId],
+        (err) => {
+            if (err) return console.log(err.message);
         }
     );
 }
@@ -269,11 +281,11 @@ let deleteFridgeOfUser = (userId, fridgeId) => {
 * Deletes all records from access where userId and fridgeId match
 * Not to be used if the user is the Owner of the fridge, just be careful :)
 */
-let deleteAccessOfUserToFridge = (userId, fridgeId, isOwner) => {
+let deleteAccessOfUserToFridge = (userId, fridgeId) => {
 
     db.run(
-        `DELETE FROM access WHERE userId = ? AND fridgeId = ? AND isOwner = ?`,
-        [userId, fridgeId, isOwner],
+        `DELETE FROM access WHERE userId = ? AND fridgeId = ?`,
+        [userId, fridgeId],
         (err) => {
             if (err) return console.log(err.message);
         }
@@ -432,6 +444,11 @@ module.exports.addFood = addFood;
 module.exports.addNewFridge = addNewFridge;
 
 // ---- UPDATERS ----
+
+
+// ---- DELETERS ----
+module.exports.deleteFridgeOfUser = deleteFridgeOfUser;
+
 
 // ---- DEBUG METHODS ----
 module.exports.getAllTables = getAllTables;

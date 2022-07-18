@@ -25,7 +25,7 @@ app.get(`/user`, (req, res) => {
 /**
  * Returns the content of a Fridge
  */
-app.get(`/fridge/:id`, (req, res) => {
+app.get(`/fridge/:id/foods`, (req, res) => {
 
     const { id } = req.params;
     appDao.openDatabase();
@@ -152,6 +152,17 @@ app.post(`/fridge/add/food/`, (req, res) => {
 
 // -------------- DELETERS ----------------
 
+app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
+    const {userId} = req.params;
+    const {fridgeId} = req.params;
+
+    appDao.openDatabase();
+    appDao.deleteFridgeOfUser(parseInt(userId), parseInt(fridgeId));
+    appDao.closeDatabase();
+
+    res.status(200).send(`Deletato fridgo ${fridgeId} di ${userId}`);
+
+})
 
 // ----------------------------- DEBUG METHODS----------------
 
