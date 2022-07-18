@@ -458,6 +458,7 @@ module.exports.addNewFridge = addNewFridge;
 // ---- DELETERS ----
 module.exports.deleteFridgeOfUser = deleteFridgeOfUser;
 module.exports.deleteSingleFoodOfFridge = deleteSingleFoodOfFridge;
+module.exports.deleteAccessOfUserToFridge = deleteAccessOfUserToFridge;
 
 
 // ---- DEBUG METHODS ----

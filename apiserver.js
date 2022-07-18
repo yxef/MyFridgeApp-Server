@@ -157,7 +157,7 @@ app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
     const {fridgeId} = req.params;
 
     appDao.openDatabase();
-    appDao.deleteFridgeOfUser(parseInt(userId), parseInt(fridgeId));
+    appDao.deleteFridgeOfUser(userId, parseInt(fridgeId));
     appDao.closeDatabase();
 
     res.status(200).send(`Deletato fridgo ${fridgeId} di ${userId}`);
@@ -173,6 +173,17 @@ app.delete(`/fridge/:fridgeId/delete/food/:foodId`, (req, res) => {
     appDao.closeDatabase();
 
     res.status(200).send(`Deletato ${foodId} da ${fridgeId}`);
+})
+
+app.delete(`/user/:userId/access/delete/:fridgeId`, (req,res) =>{
+    const {userId} = req.params;
+    const {fridgeId} = req.params;
+
+    appDao.openDatabase();
+    appDao.deleteAccessOfUserToFridge(userId, parseInt(fridgeId));
+    appDao.closeDatabase();
+
+    res.status(200).send(`Deletato Accesso di ${userId} a ${fridgeId}`);
 })
 
 // ----------------------------- DEBUG METHODS----------------
