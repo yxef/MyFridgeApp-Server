@@ -252,7 +252,6 @@ let deleteAll = () => {
 /*
 * Deletes a row of the fridge table with specific fridgeId
 * and all of its appereances on the access table
-* TODO("ALSO DELETE FOOD CONTENT ASSOCIATED WITH IT")
 */
 let deleteFridgeOfUser = (userId, fridgeId) => {
     db.run(
@@ -268,6 +267,16 @@ let deleteFridgeOfUser = (userId, fridgeId) => {
 }
 
 let deleteAllFoodOfFridge = (fridgeId) => {
+    db.run(
+        `DELETE FROM foods WHERE fridgeId = ?`,
+        [fridgeId],
+        (err) => {
+            if (err) return console.log(err.message);
+        }
+    );
+}
+
+let deleteSingleFoodOfFridge = (fridgeId, foodId) => {
     db.run(
         `DELETE FROM foods WHERE fridgeId = ?`,
         [fridgeId],
@@ -448,6 +457,7 @@ module.exports.addNewFridge = addNewFridge;
 
 // ---- DELETERS ----
 module.exports.deleteFridgeOfUser = deleteFridgeOfUser;
+module.exports.deleteSingleFoodOfFridge = deleteSingleFoodOfFridge;
 
 
 // ---- DEBUG METHODS ----

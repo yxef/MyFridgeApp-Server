@@ -164,6 +164,17 @@ app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
 
 })
 
+app.delete(`/fridge/:fridgeId/delete/food/:foodId`, (req, res) => {
+    const {fridgeId} = req.params;
+    const {foodId} = req.params;
+
+    appDao.openDatabase();
+    appDao.deleteSingleFoodOfFridge(parseInt(fridgeId), parseInt(foodId));
+    appDao.closeDatabase();
+
+    res.status(200).send(`Deletato ${foodId} da ${fridgeId}`);
+})
+
 // ----------------------------- DEBUG METHODS----------------
 
 /**
