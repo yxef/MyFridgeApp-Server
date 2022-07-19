@@ -384,6 +384,27 @@ const getFoodResultAsync = async (fridgeId) => {
     return await getFoodInFridge(fridgeId);
 }
 
+const getAccessOfFridge = (fridgeId) => {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(
+                `SELECT * FROM access WHERE fridgeId = ?`,
+                [fridgeId],
+                (err, rows) => {
+                    if (err) return reject(err.message);
+
+                    resolve(rows);
+                }
+            );
+        })
+    });
+}
+
+const getAccessOfFridgeAsync = async (fridgeId) => {
+    return await getAccessOfFridge(fridgeId);
+}
+
+
 // let getFoodResultPromise = (fridgeId) => {
 //     getFoodInFridge(fridgeId).then((results) => {
 //         return results;
@@ -445,6 +466,7 @@ module.exports.closeDatabase = closeDatabase;
 // ---- GETTERS ----
 module.exports.getFoodResult = getFoodResultAsync;
 module.exports.getAllFridgesOfUser = getAllFridgesOfUserAsync;
+module.exports.getAccessOfFridge = getAccessOfFridgeAsync;
 
 // ---- SETTERS ----
 module.exports.addNewUser = addNewUser;

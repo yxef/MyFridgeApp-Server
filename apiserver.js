@@ -11,6 +11,18 @@ app.listen(
     () => console.log(`it's alive on http://localhost:${PORT}`)
 )
 
+// ---- Helper Function ----
+let createJsonArrayObject = (res, result) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.write(`[`   , 'utf8', ()=>{});
+    result.forEach((row) => {
+        res.write(JSON.stringify(row), 'utf8', ()=>{});
+        res.write(',')
+    });
+    res.write(`]`, 'utf8', ()=>{});
+    res.end('');
+}
+
 // ------------ GETTERS ----------------
 
 /* Example. just takes space
@@ -35,15 +47,7 @@ app.get(`/fridge/:id/foods`, (req, res) => {
     appDao.closeDatabase();
 
     foodResult.then((result) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.write(`[`   , 'utf8', ()=>{});
-        result.forEach((row) => {
-            res.write(JSON.stringify(row), 'utf8', ()=>{});
-            res.write(',')
-        });
-        res.write(`]`, 'utf8', ()=>{});
-        res.end('');
-        //res.status(200).json({result});   
+        createJsonArrayObject(res, result);
     });
 
 });
@@ -62,19 +66,27 @@ app.get(`/user/:id/fridges`, (req, res) => {
     appDao.closeDatabase();
 
     fridgesResult.then((result) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.write(`[`   , 'utf8', ()=>{});
-        result.forEach((row) => {
-            res.write(JSON.stringify(row), 'utf8', ()=>{});
-            res.write(',')
-        });
-        res.write(`]`, 'utf8', ()=>{});
-        res.end('');
-        //res.status(200).json({result});   
+        createJsonArrayObject(res, result);
     });
 
 });
 
+/**
+ * 
+ */
+ app.get(`/fridge/:fridgeId/access`, (req, res) => {
+    const { fridgeId } = req.params;
+    
+    appDao.openDatabase();
+
+    const accessResult = appDao.getAccessOfFridge(parseInt(fridgeId));
+
+    appDao.closeDatabase();
+
+    accessResult.then((result) => {
+        createJsonArrayObject(res, result);
+    });
+});
 
 // ------------- SETTERS -----------------
 
