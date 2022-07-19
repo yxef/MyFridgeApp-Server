@@ -173,6 +173,23 @@ app.put(`/fridge/:fridgeId/update`, (req, res) => {
     res.status(200).send(`Updated fridge with Id ${fridgeId} with its new name ${fridgeName}`);
 });
 
+app.put(`/food/:foodId/update`, (req, res) => {
+    const { foodId } = req.params;
+    const { foodName } = req.body;
+    const { expiration_date } = req.body;
+    const { iconId } = req.body;
+
+    appDao.openDatabase();
+    appDao.updateFood(foodId, foodName, expiration_date, iconId);
+    appDao.closeDatabase();
+
+    res.status(200).send(`Updated food with Id ${foodId} 
+        with its new name ${foodName}, 
+        new expiration date ${expiration_date},
+        and new icon id ${iconId}`);
+
+});
+
 // -------------- DELETERS ----------------
 
 /**

@@ -410,7 +410,14 @@ const getAccessOfFridgeAsync = async (fridgeId) => {
  * Updates a food row with a new name, expiration_date and iconId
  */
 const updateFood = (foodId, foodName, foodExpiration, foodIconId) => {
-
+    db.run(
+        `UPDATE foods SET foodName = ?, expiration_date = ?, iconId = ? 
+            WHERE foodId = ?`,
+        [foodName, foodExpiration, foodIconId, foodId],
+        (err) => {
+            if (err) return console.log(err.message);
+        }
+    )
 }
 
 /**
@@ -421,7 +428,7 @@ const updateFridge = (fridgeId, fridgeName) => {
         `UPDATE fridges SET name = ? WHERE id = ?`,
         [fridgeName, fridgeId],
         (err) => {
-            if (err) return reject(err.message);
+            if (err) return console.log(err.message);
         }
     )
 }
@@ -497,6 +504,7 @@ module.exports.addNewFridge = addNewFridge;
 
 // ---- UPDATERS ----
 module.exports.updateFridge = updateFridge;
+module.exports.updateFood = updateFood;
 
 // ---- DELETERS ----
 module.exports.deleteFridgeOfUser = deleteFridgeOfUser;
