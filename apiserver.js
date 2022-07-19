@@ -12,7 +12,7 @@ app.listen(
 )
 
 // ---- Helper Function ----
-let createJsonArrayObject = (res, result) => {
+const createJsonArrayObject = (res, result) => {
     res.setHeader('Content-Type', 'application/json');
     res.write(`[`   , 'utf8', ()=>{});
     result.forEach((row) => {
@@ -162,7 +162,16 @@ app.post(`/fridge/add/food/`, (req, res) => {
 
 // -------------- UPDATERS ----------------
 
+app.put(`/fridge/:fridgeId/update`, (req, res) => {
+    const { fridgeId } = req.params;
+    const { fridgeName } = req.body;
 
+    appDao.openDatabase();
+    appDao.updateFridge(fridgeId, fridgeName);
+    appDao.closeDatabase();
+
+    res.status(200).send(`Updated fridge with Id ${fridgeId} with its new name ${fridgeName}`);
+});
 
 // -------------- DELETERS ----------------
 

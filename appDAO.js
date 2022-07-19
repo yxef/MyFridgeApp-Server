@@ -405,6 +405,27 @@ const getAccessOfFridgeAsync = async (fridgeId) => {
 }
 
 
+// ---- UPDATES ----
+/**
+ * Updates a food row with a new name, expiration_date and iconId
+ */
+const updateFood = (foodId, foodName, foodExpiration, foodIconId) => {
+
+}
+
+/**
+ * Updates a fridge row with a new name
+ */
+const updateFridge = (fridgeId, fridgeName) => {
+    db.run(
+        `UPDATE fridges SET name = ? WHERE id = ?`,
+        [fridgeName, fridgeId],
+        (err) => {
+            if (err) return reject(err.message);
+        }
+    )
+}
+
 // let getFoodResultPromise = (fridgeId) => {
 //     getFoodInFridge(fridgeId).then((results) => {
 //         return results;
@@ -475,7 +496,7 @@ module.exports.addFood = addFood;
 module.exports.addNewFridge = addNewFridge;
 
 // ---- UPDATERS ----
-
+module.exports.updateFridge = updateFridge;
 
 // ---- DELETERS ----
 module.exports.deleteFridgeOfUser = deleteFridgeOfUser;
