@@ -337,6 +337,26 @@ let addFood = (fridgeId, foodName, expirationDate, iconId) => {
     )
 }
 
+let getSingleFridge = (fridgeId) => {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(
+                `SELECT * FROM fridges WHERE id = ?`,
+                [fridgeId],
+                (err, rows) => {
+                    if (err) return reject(err.message);
+
+                    resolve(rows);
+                }
+            );
+        });
+    });
+}
+
+const getSingleFridgeAsync = async (fridgeId) => {
+    return await getSingleFridge(fridgeId);
+}
+
 let getAllFridgesOfUser = (userId) => {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
@@ -495,6 +515,7 @@ module.exports.closeDatabase = closeDatabase;
 module.exports.getFoodResult = getFoodResultAsync;
 module.exports.getAllFridgesOfUser = getAllFridgesOfUserAsync;
 module.exports.getAccessOfFridge = getAccessOfFridgeAsync;
+module.exports.getSingleFridge = getSingleFridgeAsync;
 
 // ---- SETTERS ----
 module.exports.addNewUser = addNewUser;

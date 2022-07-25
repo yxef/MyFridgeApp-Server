@@ -52,6 +52,24 @@ app.get(`/fridge/:id/foods`, (req, res) => {
 
 });
 
+/**
+ * Gets a single fridge
+ */
+app.get(`/fridge/:id`, (req, res) => {
+
+    const { id } = req.params;
+    appDao.openDatabase();
+
+    const foodResult = appDao.getSingleFridge(parseInt(id));
+
+    appDao.closeDatabase();
+
+    foodResult.then((result) => {
+        createJsonArrayObject(res, result);
+    });
+
+});
+
 
 /**
  * Returns all fridges of user
