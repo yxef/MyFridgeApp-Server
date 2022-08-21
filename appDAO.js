@@ -15,8 +15,6 @@ var db = new sqlite3.Database('./MyFridge.db');
 let openDatabase = () => {
     db = new sqlite3.Database("./MyFridge.db", sqlite3.OPEN_READWRITE, (err) => {
         if (err) return console.log(err.message);
-
-        console.log("Connection Successful");
     });
 }
 
@@ -27,8 +25,6 @@ let openDatabase = () => {
 let closeDatabase = () => {
     db.close((err) => {
         if (err) return console.log(err.message);
-
-        console.log("Connection Terminated");
     });
 }
 
@@ -326,11 +322,11 @@ let initializeDatabase = () => {
     createTableAccess();
 }
 
-let addFood = (fridgeId, foodName, expirationDate, iconId) => {
+let addFood = (fridgeId, foodName, expiration_date, iconId) => {
     db.run(
         `INSERT INTO foods(fridgeId, foodName, expiration_date, iconId)
          VALUES(?, ?, ?, ?)`,
-        [fridgeId, foodName, expirationDate, iconId],
+        [fridgeId, foodName, expiration_date, iconId],
         (err) => {
             if (err) return console.log(err.message);
         }
@@ -459,33 +455,10 @@ const updateFridge = (fridgeId, fridgeName) => {
 //     });
 // }
 
-/**
- * Debug Function
- * returns a random name from list name
- * used to populate food table organically
- */
-let randomFoodName = () => {
-    let nameList = [
-        `apple`,
-        `mayo`,
-        `pasta`,
-        `banana`,
-        `tomato`,
-        `pingas`,
-        `pistacchio`,
-        `meow`,
-        `mozzarella`,
-        `cheese`,
-        `lettuce`
-    ];
-
-    return nameList[randomInt(0, nameList.length - 1)];
-}
 
 /**
  * TO REPOPULATE DB
- * FOR TESTING ONLY
- * TODO("ADD FOODS QUERIES")
+ * FOR DEBUGGING ONLY
  */
 let populateMockDatabase = () => {
     for (let i = 0; i < 10; i++) { addNewUser(i); }
@@ -495,7 +468,7 @@ let populateMockDatabase = () => {
 
 
 
-// openDatabase();
+ //openDatabase();
 
 // // START MANUAL FUCTION CALLS HERE
 
@@ -505,7 +478,7 @@ let populateMockDatabase = () => {
 // const foodResult = getFoodResultAsync(10);
 // foodResult.then(result => console.log(result));
 
-// closeDatabase();
+//closeDatabase();
 
 // ---- BASIC FUNCTIONALITY
 module.exports.openDatabase = openDatabase;

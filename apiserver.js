@@ -13,11 +13,14 @@ app.listen(
 
 // ---- Helper Function ----
 const createJsonArrayObject = (res, result) => {
+    let i = 0;
     res.setHeader('Content-Type', 'application/json');
     res.write(`[`   , 'utf8', ()=>{});
     result.forEach((row) => {
         res.write(JSON.stringify(row), 'utf8', ()=>{});
-        res.write(',')
+        i++;
+        if(result.length > i)
+            res.write(',')
     });
     res.write(`]`, 'utf8', ()=>{});
     res.end('');
@@ -35,7 +38,7 @@ app.get(`/user`, (req, res) => {
 */
 
 /**
- * Returns the content of a Fridge
+ * Returns the foods of a Fridge
  */
 app.get(`/fridge/:id/foods`, (req, res) => {
 
@@ -90,7 +93,7 @@ app.get(`/user/:id/fridges`, (req, res) => {
 });
 
 /**
- * 
+ *  Gets which user can access specific Fridge
  */
  app.get(`/fridge/:fridgeId/access`, (req, res) => {
     const { fridgeId } = req.params;
@@ -167,15 +170,15 @@ app.post(`/fridge/access/give/:fridgeId`, (req, res) =>{
 app.post(`/fridge/add/food/`, (req, res) => {
     const { fridgeId } = req.body;
     const { foodName } = req.body;
-    const { expirationDate } = req.body;
+    const { expiration_date } = req.body;
     const { iconId } = req.body;
 
 
     appDao.openDatabase();
-    appDao.addFood(parseInt(fridgeId), foodName, expirationDate, parseInt(iconId));
+    appDao.addFood(parseInt(fridgeId), foodName, expiration_date, parseInt(iconId));
     appDao.closeDatabase();
 
-    res.status(200).send(`fId: ${fridgeId}, foodname: ${foodName}, exp_date: ${expirationDate}`);
+    res.status(200).send(`fId: ${fridgeId}, foodname: ${foodName}, exp_date: ${expiration_date}`);
 })
 
 // -------------- UPDATERS ----------------
