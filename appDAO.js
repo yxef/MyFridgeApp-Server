@@ -7,7 +7,6 @@ const sqlite3 = require('sqlite3').verbose();
 
 var db = new sqlite3.Database('./MyFridge.db');
 
-
 /**
  * Opens connection to the Database file MyFridge.db
  * Also generates the file if not present
@@ -35,7 +34,9 @@ let closeDatabase = () => {
  */
 let createTableUser = () => {
     db.run(
-        `CREATE TABLE users(id PRIMARY KEY)`
+        `CREATE TABLE users(
+            id PRIMARY KEY
+        )`
     );
 }
 
@@ -174,13 +175,15 @@ let getUser = (id) => {
  * Creates a new User with specific Id
  * We have to pass the Id since its meant to be the App install Id
  */
-let addNewUser = (id) => {
+let addNewUserWithId = (id) => {
     return new Promise((resolve, reject) => {
         db.run(
             `INSERT INTO users (id) VALUES(?)`,
             [id],
             (err) => {
                 if (err) return console.log(err.message);
+
+                return `Sent request to create new user with id: ${id}`
             }
         );
     });
@@ -468,10 +471,10 @@ let populateMockDatabase = () => {
 
 
 
- //openDatabase();
-
+//openDatabase();
 // // START MANUAL FUCTION CALLS HERE
 
+//initializeDatabase();
 // //getAllTables();
 // //populateDatabase();
 // //deleteAll();
@@ -491,7 +494,7 @@ module.exports.getAccessOfFridge = getAccessOfFridgeAsync;
 module.exports.getSingleFridge = getSingleFridgeAsync;
 
 // ---- SETTERS ----
-module.exports.addNewUser = addNewUser;
+module.exports.addNewUserWithId = addNewUserWithId;
 module.exports.addToAccess = addToAccess;
 module.exports.addFood = addFood;
 module.exports.addNewFridge = addNewFridge;
@@ -508,3 +511,4 @@ module.exports.deleteAccessOfUserToFridge = deleteAccessOfUserToFridge;
 
 // ---- DEBUG METHODS ----
 module.exports.getAllTables = getAllTables;
+module.exports.deleteAllTables = deleteAll;

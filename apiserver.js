@@ -109,28 +109,20 @@ app.get(`/user/:id/fridges`, (req, res) => {
     });
 });
 
-// ------------- SETTERS -----------------
+// ------------- POSTERS(?) -----------------
 
 /**
- * Creates a new User
+ * Creates a new User with specified Id
  */
 app.post(`/user/:id`, (req, res) => {
 
     const { id } = req.params;
 
     appDao.openDatabase();
-    appDao.addNewUser(id);
+    let response = appDao.addNewUserWithId(id);
     appDao.closeDatabase();
 
-    res.status(200).send(`Sent request to create new user with id: ${id}`);
-
-    // if (isCool == "no") {
-    //     res.status(200).send({ message: "lol u sugs: " + isCool })
-    // }
-
-    // res.send({
-    //     isCool: `are u cool? ${isCool}. You have an id of ${id}`,
-    // })
+    res.status(200).send(response);
 });
 
 app.post(`/user/create/fridge`, (req, res) => {
@@ -269,3 +261,10 @@ app.get(`/debug/all`, (req, res) => {
 
     res.status(418).send(`Debug printed to console`);
 });
+
+app.delete(`/debug/delete/all`, (req, res) => {
+    appDao.openDatabase();
+    appDao.deleteAllTables();
+    appDao.closeDatabase();
+    res.status(200).send(`Deleted everything`);
+ });
