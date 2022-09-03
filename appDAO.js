@@ -360,7 +360,7 @@ let getAllFridgesOfUser = (userId) => {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             db.all(
-                `SELECT * FROM access WHERE userId = ?`,
+                `SELECT access.userId, access.fridgeId, fridges.name AS fridgeName FROM access INNER JOIN fridges on access.fridgeId = fridges.id WHERE userId = ?`,
                 [userId],
                 (err, rows) => {
                     if (err) return reject(err.message);

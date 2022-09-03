@@ -77,12 +77,13 @@ app.get(`/fridge/:id`, (req, res) => {
 /**
  * Returns all fridges of user
  */
-app.get(`/user/:id/fridges`, (req, res) => {
+app.get(`/user/:userId/fridges`, (req, res) => {
 
-    const { id } = req.params;
+    const { userId } = req.params;
+
     appDao.openDatabase();
 
-    const fridgesResult = appDao.getAllFridgesOfUser(parseInt(id));
+    const fridgesResult = appDao.getAllFridgesOfUser(userId);
 
     appDao.closeDatabase();
 
