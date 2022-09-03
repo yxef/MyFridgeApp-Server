@@ -473,7 +473,7 @@ let populateMockDatabase = () => {
 
 //openDatabase();
 // // START MANUAL FUCTION CALLS HERE
-
+openDatabase();
 //initializeDatabase();
 // //getAllTables();
 // //populateDatabase();

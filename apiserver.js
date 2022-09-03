@@ -43,11 +43,11 @@ app.get(`/user`, (req, res) => {
 app.get(`/fridge/:id/foods`, (req, res) => {
 
     const { id } = req.params;
-    appDao.openDatabase();
+    
 
     const foodResult = appDao.getFoodResult(parseInt(id));
 
-    appDao.closeDatabase();
+    
 
     foodResult.then((result) => {
         createJsonArrayObject(res, result);
@@ -61,11 +61,11 @@ app.get(`/fridge/:id/foods`, (req, res) => {
 app.get(`/fridge/:id`, (req, res) => {
 
     const { id } = req.params;
-    appDao.openDatabase();
+    
 
     const foodResult = appDao.getSingleFridge(parseInt(id));
 
-    appDao.closeDatabase();
+    
 
     foodResult.then((result) => {
         createJsonArrayObject(res, result);
@@ -81,11 +81,11 @@ app.get(`/user/:userId/fridges`, (req, res) => {
 
     const { userId } = req.params;
 
-    appDao.openDatabase();
+    
 
     const fridgesResult = appDao.getAllFridgesOfUser(userId);
 
-    appDao.closeDatabase();
+    
 
     fridgesResult.then((result) => {
         createJsonArrayObject(res, result);
@@ -99,11 +99,11 @@ app.get(`/user/:userId/fridges`, (req, res) => {
  app.get(`/fridge/:fridgeId/access`, (req, res) => {
     const { fridgeId } = req.params;
     
-    appDao.openDatabase();
+    
 
     const accessResult = appDao.getAccessOfFridge(parseInt(fridgeId));
 
-    appDao.closeDatabase();
+    
 
     accessResult.then((result) => {
         createJsonArrayObject(res, result);
@@ -119,9 +119,9 @@ app.post(`/user/:id`, (req, res) => {
 
     const { id } = req.params;
 
-    appDao.openDatabase();
+    
     let response = appDao.addNewUserWithId(id);
-    appDao.closeDatabase();
+    
 
     res.status(200).send(response);
 });
@@ -130,9 +130,9 @@ app.post(`/user/create/fridge`, (req, res) => {
     const {userId} = req.body;
     const {fridgeName} = req.body;
 
-    appDao.openDatabase();
+    
     appDao.addNewFridge(userId, fridgeName);
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Sent request to create new fridge with name: ${fridgeName}`);
 
@@ -147,9 +147,9 @@ app.post(`/fridge/access/give/:fridgeId`, (req, res) =>{
     const { userId } = req.body;
 
     if(userId != null){
-        appDao.openDatabase();
+        
         appDao.addToAccess(userId, parseInt(fridgeId), false);
-        appDao.closeDatabase();
+        
         res.status(200).send(`Recieved request to give ${userId} access to ${fridgeId}`);
     }
 
@@ -167,9 +167,9 @@ app.post(`/fridge/add/food/`, (req, res) => {
     const { iconId } = req.body;
 
 
-    appDao.openDatabase();
+    
     appDao.addFood(parseInt(fridgeId), foodName, expiration_date, parseInt(iconId));
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`fId: ${fridgeId}, foodname: ${foodName}, exp_date: ${expiration_date}`);
 })
@@ -180,9 +180,9 @@ app.put(`/fridge/:fridgeId/update`, (req, res) => {
     const { fridgeId } = req.params;
     const { fridgeName } = req.body;
 
-    appDao.openDatabase();
+    
     appDao.updateFridge(fridgeId, fridgeName);
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Updated fridge with Id ${fridgeId} with its new name ${fridgeName}`);
 });
@@ -193,9 +193,9 @@ app.put(`/food/:foodId/update`, (req, res) => {
     const { expiration_date } = req.body;
     const { iconId } = req.body;
 
-    appDao.openDatabase();
+    
     appDao.updateFood(foodId, foodName, expiration_date, iconId);
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Updated food with Id ${foodId} 
         with its new name ${foodName}, 
@@ -213,9 +213,9 @@ app.delete(`/user/:userId/delete/fridge/:fridgeId`, (req, res) => {
     const {userId} = req.params;
     const {fridgeId} = req.params;
 
-    appDao.openDatabase();
+    
     appDao.deleteFridgeOfUser(userId, parseInt(fridgeId));
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Deletato fridgo ${fridgeId} di ${userId}`);
 
@@ -228,9 +228,9 @@ app.delete(`/fridge/:fridgeId/delete/food/:foodId`, (req, res) => {
     const {fridgeId} = req.params;
     const {foodId} = req.params;
 
-    appDao.openDatabase();
+    
     appDao.deleteSingleFoodOfFridge(parseInt(fridgeId), parseInt(foodId));
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Deletato ${foodId} da ${fridgeId}`);
 })
@@ -243,9 +243,9 @@ app.delete(`/fridge/:fridgeId/access/delete/:userId`, (req,res) =>{
     const {userId} = req.params;
     const {fridgeId} = req.params;
 
-    appDao.openDatabase();
+    
     appDao.deleteAccessOfUserToFridge(userId, parseInt(fridgeId));
-    appDao.closeDatabase();
+    
 
     res.status(200).send(`Deletato Accesso di ${userId} a ${fridgeId}`);
 })
@@ -256,16 +256,16 @@ app.delete(`/fridge/:fridgeId/access/delete/:userId`, (req,res) =>{
  * Prints all tables to the console
  */
 app.get(`/debug/all`, (req, res) => {
-    appDao.openDatabase();
+    
     appDao.getAllTables();
-    appDao.closeDatabase();
+    
 
     res.status(418).send(`Debug printed to console`);
 });
 
 app.delete(`/debug/delete/all`, (req, res) => {
-    appDao.openDatabase();
+    
     appDao.deleteAllTables();
-    appDao.closeDatabase();
+    
     res.status(200).send(`Deleted everything`);
  });
