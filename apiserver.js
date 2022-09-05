@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.listen(
     PORT,
-    () => console.log(`it's alive on http://localhost:${PORT}`)
+    () => console.log(`it's alive on http://79.19.186.29:${PORT}`)
 )
 
 // ---- Helper Function ----
