@@ -512,3 +512,4 @@ module.exports.deleteAccessOfUserToFridge = deleteAccessOfUserToFridge;
 // ---- DEBUG METHODS ----
 module.exports.getAllTables = getAllTables;
 module.exports.deleteAllTables = deleteAll;
+module.exports.initializeTables = initializeDatabase;

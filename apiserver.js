@@ -269,3 +269,9 @@ app.delete(`/debug/delete/all`, (req, res) => {
     
     res.status(200).send(`Deleted everything`);
  });
+
+app.get(`/debug/initalize`, (req, res) => {
+    appDao.initializeTables();
+
+    res.status(200).send(`Tables have been initialized`);
+});
